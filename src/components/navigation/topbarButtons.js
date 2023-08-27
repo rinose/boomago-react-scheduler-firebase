@@ -4,12 +4,6 @@ import FlatButton from 'material-ui/FlatButton';
 
 const topbarButtons = (
   <div>
-    <Link to="/">
-      <FlatButton label="Home" style={{color: '#fff'}} />
-    </Link>
-    <Link to="/dashboard">
-      <FlatButton label="dashboard" style={{color: '#fff'}} />
-    </Link>
     <span>
         <Link to="/login">
           <FlatButton label="Login" style={{color: '#fff'}} />

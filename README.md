@@ -57,3 +57,8 @@ npm run build
 
 
 
+## DEPLOY
+nvm use v11.12.0
+npm run build && firebase deploy
+or
+npm run deploy

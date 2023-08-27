@@ -8,7 +8,7 @@ const PublicRoutes = ({component: Component, authed, routeAuth, ...rest}) => {
     authed === false || routeAuth === undefined? (
       <Component {...props} />
     ) : (
-      <Redirect to="/dashboard" />
+      <Redirect to="/" />
     )
   } />
 }

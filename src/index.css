@@ -3,3 +3,19 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+
+.modal-container {
+  position: absolute;
+  width: 90%;
+  max-width: 400px;
+  background-color: #e7e7e7;
+  border: 2px solid rgb(100, 100, 100);
+  padding: 1em;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.rbc-event-label {
+  float: left !important;
+}

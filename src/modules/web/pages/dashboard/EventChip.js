@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react'
 import { DragSource } from 'react-dnd';
-import BigCalendar from 'react-big-calendar'
 import Chip from 'material-ui/Chip';
 
 
@@ -34,17 +33,17 @@ class DraggableSidebarEvent extends Component {
 
   render() {
     let {connectDragSource, isDragging, event} = this.props;
-    let EventWrapper = BigCalendar.components.eventWrapper;
+    //let EventWrapper = BigCalendar.components.eventWrapper;
     let {title} = event;
 
 
     return (
-      <EventWrapper event={event}>
+      <div event={event}>
         {connectDragSource(<div style={{opacity: isDragging ? 0.5 : 1}}>
           <Chip onClick={()=>{this.props.onClickEvent(event)}}
           >{title}</Chip>
         </div>)}
-      </EventWrapper>
+      </div>
 
     );
   }

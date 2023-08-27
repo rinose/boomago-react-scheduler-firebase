@@ -1,14 +1,34 @@
 import React, { Component } from 'react';
+import firebase from 'firebase/compat/app';
+import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
+import { uiConfig } from '../../../../config/constants'
 import { login, resetPassword } from '../../../../helpers/auth';
 
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+//import RaisedButton from 'material-ui/RaisedButton';
+//import TextField from 'material-ui/TextField';
+//import Link from '@material-ui/core/Link';
+
+
 
 function setErrorMsg(error) {
   return {
     loginMessage: error
   };
 }
+
+const raisedBtn = {
+  margin: 15
+};
+
+const container = {
+  textAlign: 'center',
+  paddingTop:110
+};
+
+const style = {
+  raisedBtn,
+  container
+};
 
 export default class Login extends Component {
   constructor(props) {
@@ -38,7 +58,10 @@ export default class Login extends Component {
   };
 
   render() {
-    return (
+    return(<div style={style.container}>
+      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+    </div>)
+    /*return (
       <form
         style={style.container}
         onSubmit={event => this.handleSubmit(event)}
@@ -65,9 +88,9 @@ export default class Login extends Component {
             />
             <span className="sr-only">Error:</span>
             &nbsp;{this.state.loginMessage}{' '}
-            <a href='' onClick={this.resetPassword} className="alert-link">
-              Forgot Password?
-            </a>
+            <Link href="#" onClick={this.resetPassword}>
+            Forgot Password?
+            </Link>
           </div>
         )}
         <RaisedButton
@@ -77,19 +100,6 @@ export default class Login extends Component {
           type="submit"
         />
       </form>
-    );
+    );*/
   }
 }
-
-const raisedBtn = {
-  margin: 15
-};
-
-const container = {
-  textAlign: 'center'
-};
-
-const style = {
-  raisedBtn,
-  container
-};

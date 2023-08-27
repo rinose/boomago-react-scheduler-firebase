@@ -1,38 +1,43 @@
-import firebase from 'firebase';
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+import 'firebase/compat/firestore';
 // Required for side-effects
-require('firebase/firestore');
+//require('firebase/firestore');
 
 const config = {
-  apiKey: process.env.REACT_APP_FIREBASE_KEY,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_DATABASE_URL,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID
+  apiKey: "AIzaSyBvSEse4cYERyxaZBvjLIeC3KcSrqJf3SY",
+  authDomain: "boomago-10c30.firebaseapp.com",
+  databaseURL: "https://boomago-10c30.firebaseio.com",
+  projectId: "boomago-10c30",
+  storageBucket: "boomago-10c30.appspot.com",
+  messagingSenderId: "765251863218",
+  appId: "1:765251863218:web:d56a1c07c340a2e1"
 };
 
-firebase.initializeApp(config);
+if (!firebase.apps.length) {
+  console.log("firebase.initializeApp")
+  firebase.initializeApp(config);
+}
 
 export const storageKey = 'KEY_FOR_LOCAL_STORAGE';
 export const db = firebase.firestore();
 export const firebaseAuth = firebase.auth;
+// FirebaseUI (for login)
+export const uiConfig = {
+  // Popup signin flow rather than redirect flow.
+  signInFlow: 'popup',
+  // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+  signInSuccessUrl: '/dashboard',
+  // We will display Google and Facebook as auth providers.
+  signInOptions: [
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+  ],
+};
+
+
 export const minTime = new Date();
 minTime.setHours(7, 0, 0);
 export const maxTime = new Date();
 maxTime.setHours(20, 0, 0);
-export const calendarInitialState = {
-  events: [],
-  equipments: [],
-  people: [],
-  modal: {
-    id: null,
-    title: null,
-    desc: null,
-    start: new Date(2018, 4, 4, 7, 0, 0),
-    end: new Date(2018, 4, 4, 8, 0, 0),
-  },
-  modalOpen: false,
-  equipmentsOpen: false,
-  peopleOpen: false,
-
-}

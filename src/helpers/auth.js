@@ -10,7 +10,9 @@ export function auth(email, pw) {
 
 export function logout() {
   localStorage.removeItem(storageKey)
-  return firebaseAuth().signOut()
+  return firebaseAuth().signOut().then( () => {
+    window.location = window.location.origin;
+  })
 }
 
 export function login(email, pw) {

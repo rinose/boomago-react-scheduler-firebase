@@ -6,7 +6,6 @@ import RaisedButton from 'material-ui/RaisedButton';
 
 export default class Footer extends React.Component {
   handleClick() {
-    console.log(this.props.selectedEvents);
     let cal = ical({domain: 'github.com', name: 'Scheduler Export'});
 
     this.props.selectedEvents.map((event) => {

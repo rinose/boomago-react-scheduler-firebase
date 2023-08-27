@@ -1,0 +1,18 @@
+{
+  "translations": {
+    "Day": "Day",
+    "StartHour": "Start Hour",
+    "EndHour": "End Hour",
+    "Customer": "Customer",
+    "ServiceName": "Service Name",
+    "Description": "Description",
+    "Category": "Category",
+    "Users": "Users",
+    "Services": "Services",
+    "Notes": "Notes",
+    "UserName": "User Name",
+    "LastName": "Last Name",
+    "Phone": "Phone",
+    "Create": "Create"
+  }
+}

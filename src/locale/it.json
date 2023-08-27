@@ -1,0 +1,18 @@
+{
+  "translations": {
+    "Day": "Giorno",
+    "StartHour": "Orario Inizio",
+    "EndHour": "Orario Fine",
+    "Customer": "Cliente",
+    "ServiceName": "Nome Servizio",
+    "Description": "Descrizione",
+    "Category": "Categoria",
+    "Users": "Utenti",
+    "Services": "Servizi",
+    "Notes": "Note",
+    "UserName": "Nome",
+    "LastName": "Cognome",
+    "Phone": "Telefono",
+    "Create": "Crea"
+  }
+}

@@ -70,7 +70,8 @@ const raisedBtn = {
 };
 
 const container = {
-  textAlign: 'center'
+  textAlign: 'center',
+  paddingTop: 110
 };
 
 const style = {

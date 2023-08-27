@@ -13,8 +13,8 @@ class Dashboard extends Component {
           if (context.email) {
             return (
               <div>
-                <div><strong>Scheduler: {context.email}</strong></div>
-                <Calendar uid={context.uid} />
+          <div><strong>{context.email} {context.sid}</strong></div>
+                <Calendar uid={context.uid} sid={context.sid}/>
               </div>
             )
           }
