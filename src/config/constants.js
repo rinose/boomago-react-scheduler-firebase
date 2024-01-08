@@ -1,6 +1,7 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
+
 // Required for side-effects
 //require('firebase/firestore');
 
@@ -22,19 +23,7 @@ if (!firebase.apps.length) {
 export const storageKey = 'KEY_FOR_LOCAL_STORAGE';
 export const db = firebase.firestore();
 export const firebaseAuth = firebase.auth;
-// FirebaseUI (for login)
-export const uiConfig = {
-  // Popup signin flow rather than redirect flow.
-  signInFlow: 'popup',
-  // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
-  signInSuccessUrl: '/dashboard',
-  // We will display Google and Facebook as auth providers.
-  signInOptions: [
-    firebase.auth.EmailAuthProvider.PROVIDER_ID,
-    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
-    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
-  ],
-};
+
 
 
 export const minTime = new Date();

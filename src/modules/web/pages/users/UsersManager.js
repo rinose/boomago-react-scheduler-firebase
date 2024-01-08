@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import uuidV4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 import { withTranslation } from 'react-i18next';
 import TableViewComponent from '../../../../components/TableViewComponent'
 //Actions
@@ -45,7 +45,7 @@ class UsersManager extends Component {
     });
   }
   onSaveUser = (user) => {
-    user.id = user.id ? user.id : uuidV4();
+    user.id = user.id ? user.id : uuidv4();
     UpdateUsers(user.id).set(user).then(
       this.updateUsers(false)
     ).catch(error => {

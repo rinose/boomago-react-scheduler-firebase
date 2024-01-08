@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import uuidV4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 import { withTranslation } from 'react-i18next';
 import TableViewComponent from '../../../../components/TableViewComponent'
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -36,7 +36,7 @@ class ResourcesManager extends Component {
   }
 
   onCreateResource = (resource) => {
-    resource.id = resource.id ? resource.id : uuidV4();
+    resource.id = resource.id ? resource.id : uuidv4();
     this.setResource(resource);
   }
   onEditResource = (resource) => {

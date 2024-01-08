@@ -1,14 +1,36 @@
 import React, { Component } from 'react';
 import firebase from 'firebase/compat/app';
 import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
-import { uiConfig } from '../../../../config/constants'
 import { login, resetPassword } from '../../../../helpers/auth';
+import { saveUser, mv } from '../../../../helpers/db';
 
 //import RaisedButton from 'material-ui/RaisedButton';
 //import TextField from 'material-ui/TextField';
 //import Link from '@material-ui/core/Link';
 
-
+// FirebaseUI (for login)
+const uiConfig = {
+  callbacks: {
+    signInSuccessWithAuthResult: function(authResult, redirectUrl) {
+      saveUser(authResult.user)
+      
+      // User successfully signed in.
+      // Return type determines whether we continue the redirect automatically
+      // or whether we leave that to developer to handle.
+      return true;
+    }
+  },
+  // Popup signin flow rather than redirect flow.
+  signInFlow: 'popup',
+  // Redirect to /signedIn after sign in is successful. Alternatively you can provide a callbacks.signInSuccess function.
+  signInSuccessUrl: '/dashboard',
+  // We will display Google and Facebook as auth providers.
+  signInOptions: [
+    firebase.auth.EmailAuthProvider.PROVIDER_ID,
+    firebase.auth.GoogleAuthProvider.PROVIDER_ID,
+    firebase.auth.FacebookAuthProvider.PROVIDER_ID,
+  ],
+};
 
 function setErrorMsg(error) {
   return {
@@ -57,8 +79,14 @@ export default class Login extends Component {
       .catch(error => this.setState(setErrorMsg(`Email address not found.`)));
   };
 
+  moveColl = e => {
+    e.preventDefault();
+    mv()
+  }
+
   render() {
     return(<div style={style.container}>
+      <button onClick={(e) => { this.moveColl(e)}}>Move colelction</button>
       <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
     </div>)
     /*return (

@@ -46,14 +46,17 @@ class Routes extends Component {
         GetUserByEmail(user.email)
         .then( querySnapshot => {
           let role = "user"
+          let sid = ""
           querySnapshot.forEach(doc => {
             const data = doc.data();
             role = data.role;
+            sid = data.admins[0].id
           });
+          console.log("SID " + sid)
           this.setState({
             authed: true,
             user: {
-              sid: localStorage["sid"],
+              sid: sid,
               email: user.email,
               uid: user.uid,
               role: role
@@ -78,7 +81,7 @@ class Routes extends Component {
   }
   // <Router hisotry={history} basename="/boomago/v2">
   render() {
-    if(this.state.user.sid && !this.state.user.role) return <div></div>;
+    //if(this.state.user.sid && !this.state.user.role) return <div></div>;
     return <ProfileProvider value={this.state.user}>
       
       <Router hisotry={history} basename="/">
