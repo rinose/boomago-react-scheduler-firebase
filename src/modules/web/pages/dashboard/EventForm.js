@@ -8,7 +8,7 @@ import itLocale from "date-fns/locale/it";
 //import moment from "moment";
 //import MomentUtils from "@date-io/moment";
 
-import uuidV4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 import {
   DateTimePicker,
   MuiPickersUtilsProvider,
@@ -129,7 +129,7 @@ export class EventForm extends React.Component {
   }
 
   saveUser = (user) => {
-    user.id = user.id ? user.id : uuidV4();
+    user.id = user.id ? user.id : uuidv4();
     return UpdateUsers(user.id).set(user).then( () =>
       { return user }
     ).catch(error => {

@@ -24,16 +24,21 @@ class Routes extends Component {
   constructor(props) {
     const url = new URL(window.location.href);
     const sid = url.searchParams.get("sid");
-    if(sid) localStorage.setItem("sid", sid);
-    super(props);
-    this.state = {
-      authed: !!localStorage[storageKey],
-      user: {
-        sid: localStorage["sid"],
-        email: null,
-        uid: null,
-      }
-    };
+    let a = url.searchParams.get("a");
+    if(a) localStorage.setItem("a", a);
+    a = localStorage.getItem("a");
+    if(a) {
+      if(sid) localStorage.setItem("sid", sid);
+      super(props);
+      this.state = {
+        authed: !!localStorage[storageKey],
+        user: {
+          sid: localStorage["sid"],
+          email: null,
+          uid: null,
+        }
+      };
+    }
   }
 
 

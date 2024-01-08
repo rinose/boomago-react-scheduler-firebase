@@ -5,7 +5,7 @@ import { DragDropContext } from 'react-dnd'
 import withDragAndDrop from 'react-big-calendar/lib/addons/dragAndDrop'
 import moment from 'moment'
 
-import uuidV4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 import { minTime, maxTime } from '../../../../config/constants'
 //Compoments
 import { Calendar as BigCalendar, momentLocalizer } from 'react-big-calendar'
@@ -250,7 +250,7 @@ class Dnd extends Component {
       });
     }
     else {
-      const newEventId = uuidV4()
+      const newEventId = uuidv4()
       updatedEvent = { ...updatedEvent, id: newEventId, ownerId: this.props.uid }
       nextEvents.push(updatedEvent)
       UpdateEvents(newEventId).set(updatedEvent).then(
@@ -297,7 +297,7 @@ class Dnd extends Component {
   }
 
   saveEvent = (event) => {
-    event.id = event.id ? event.id : uuidV4();
+    event.id = event.id ? event.id : uuidv4();
     event.type = !event.refUserId && !event.refServiceId ? "note" : "appointment";
     UpdateEvents(event.id).set(event).then(
       this.getEvents()

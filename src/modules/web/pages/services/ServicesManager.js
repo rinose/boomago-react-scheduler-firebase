@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import uuidV4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid';
 import { withTranslation } from 'react-i18next';
 import TableViewComponent from '../../../../components/TableViewComponent'
 import Autocomplete from '@material-ui/lab/Autocomplete';
@@ -36,7 +36,7 @@ class ServicesManager extends Component {
   }
 
   onCreateService = (service) => {
-    service.id = service.id ? service.id : uuidV4();
+    service.id = service.id ? service.id : uuidv4();
     this.setService(service);
   }
   onEditService = (service) => {
