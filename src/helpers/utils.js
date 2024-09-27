@@ -22,7 +22,7 @@ export const sendScheduledMessage = (body, to, send_at) => {
   // --data-urlencode "SendAt=2024-03-21T14:01:00Z" \
   // --data-urlencode "ScheduleType=fixed" \
   // --data-urlencode "To=+393208794111" \
-  // -u TWILIO_ACCOUNT_SID:TWILIO_AUTH_TOKEN
+  // -u ACCOUNT_SID:AUTH_TOKEN
 
   const url = `https://api.twilio.com/2010-04-01/Accounts/${TWILIO_ACCOUNT_SID}/Messages.json`;
   const headers = {
