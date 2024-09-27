@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import firebase from 'firebase/compat/app';
-import StyledFirebaseAuth from 'react-firebaseui/StyledFirebaseAuth';
 import { login, resetPassword } from '../../../../helpers/auth';
 import { saveUser, mv } from '../../../../helpers/db';
+import * as firebaseui from 'firebaseui'
+import 'firebaseui/dist/firebaseui.css'
+
+
 
 //import RaisedButton from 'material-ui/RaisedButton';
 //import TextField from 'material-ui/TextField';
 //import Link from '@material-ui/core/Link';
+
+
+
+var ui = new firebaseui.auth.AuthUI(firebase.auth());
 
 // FirebaseUI (for login)
 const uiConfig = {
@@ -31,6 +38,8 @@ const uiConfig = {
     firebase.auth.FacebookAuthProvider.PROVIDER_ID,
   ],
 };
+
+ui.start('#firebaseui-auth-container', uiConfig);
 
 function setErrorMsg(error) {
   return {
@@ -87,7 +96,7 @@ export default class Login extends Component {
   render() {
     return(<div style={style.container}>
       <button onClick={(e) => { this.moveColl(e)}}>Move colelction</button>
-      <StyledFirebaseAuth uiConfig={uiConfig} firebaseAuth={firebase.auth()} />
+      <div id="firebaseui-auth-container"></div>
     </div>)
     /*return (
       <form
