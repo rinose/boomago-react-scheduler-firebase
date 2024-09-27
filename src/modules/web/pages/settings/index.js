@@ -19,9 +19,9 @@ class Settings extends Component {
     reader.onload = function() {
       const text = reader.result;
       const services = JSON.parse(text);
-      services.forEach(function(obj) {
+      services.forEach( (obj) => {
         obj.id = String(obj.id);
-        UpdateServices(obj.id).set(obj).then(function(docRef) {
+        UpdateServices(this.props.sid, obj.id).set(obj).then(function(docRef) {
           console.log("Document written");
         })
         .catch(function(error) {

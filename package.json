@@ -1,33 +1,41 @@
 {
   "name": "react-scheduler-firebase",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "homepage": "/",
   "private": true,
   "dependencies": {
-    "@date-io/date-fns": "^1.3.13",
-    "@date-io/moment": "^2.17.0",
+    "@date-io/core": "^2.13.1",
+    "@date-io/date-fns": "^2.13.1",
+    "@date-io/moment": "^3.0.0",
+    "@emotion/react": "^11.11.4",
+    "@emotion/styled": "^11.11.0",
     "@firebase/webchannel-wrapper": "0.2.7",
     "@material-ui/core": "^4.12.4",
     "@material-ui/icons": "^4.11.3",
     "@material-ui/lab": "^4.0.0-alpha.61",
     "@material-ui/pickers": "^3.3.11",
+    "@mui/icons-material": "^5.15.12",
+    "@mui/lab": "^5.0.0-alpha.167",
+    "@mui/material": "^5.15.12",
+    "@mui/x-date-pickers": "^6.19.6",
     "date-fns": "^2.30.0",
+    "dayjs": "^1.11.10",
     "firebase": "^10.3.0",
     "gh-pages": "^1.1.0",
+    "graceful-fs": "^4.2.11",
     "history": "^4.7.2",
     "i18next": "^19.9.2",
     "i18next-browser-languagedetector": "^4.3.1",
     "ical-generator": "^0.2.10",
     "lodash": "^4.17.21",
-    "material-table": "^1.69.3",
-    "material-ui": "^0.19.4",
+    "material-table": "^2.0.5",
     "moment": "^2.29.4",
     "moment-with-locales-es6": "^1.0.1",
     "node-less-chokidar": "^0.1.2",
     "npm-run-all": "^4.1.2",
     "prop-types": "^15.8.1",
-    "react": "^17.0.1",
-    "react-big-calendar": "^1.8.2",
+    "react": "^17.0.2",
+    "react-big-calendar": "^1.11.1",
     "react-dnd": "^7.4.5",
     "react-dnd-html5-backend": "^7.4.4",
     "react-dom": "^17.0.2",
@@ -35,8 +43,9 @@
     "react-firebaseui": "^6.0.0",
     "react-i18next": "^11.18.6",
     "react-loadable": "^5.3.1",
-    "react-router-dom": "^5.3.4",
+    "react-router-dom": "^6.22.2",
     "react-scripts": "3.0.1",
+    "twilio": "^5.0.1",
     "uuid": "^9.0.0"
   },
   "scripts": {
@@ -64,5 +73,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
   }
 }

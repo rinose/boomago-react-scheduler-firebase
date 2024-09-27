@@ -1,5 +1,5 @@
 //import libs
-import React from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 
 // import components
@@ -9,7 +9,6 @@ import Drawer from '@material-ui/core/Drawer';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Container from '@material-ui/core/Container';
 import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
 import Toolbar from '@material-ui/core/Toolbar';
 import Divider from '@material-ui/core/Divider';
 import List from '@material-ui/core/List';
@@ -19,16 +18,21 @@ import NotificationsIcon from '@material-ui/icons/Notifications';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 
 import AppBar from '@material-ui/core/AppBar';
+import Button from '@material-ui/core/Button';
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
 
-import FlatButton from 'material-ui/FlatButton';
 import { logout } from '../helpers/auth'
+import { LocalStorage } from '../helpers/utils'
 
 import mainListItems from '../components/navigation/leftbar'
 
 const propTypes = {
   children: PropTypes.node.isRequired,
-  authed: PropTypes.bool.isRequired,
-
+  user: PropTypes.object.isRequired
 }
 
 const drawerWidth = 240;
@@ -113,15 +117,80 @@ const useStyles = makeStyles(theme => ({
 }));
 
 
-function AdminLayout({ children }) {
+function AdminLayout({ user: User, children }) {
+
+  const lastStructureId = LocalStorage.getCurrentStructureId() !== "null" ? LocalStorage.getCurrentStructureId() : null;
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(false);
+  const [currentStructureId, setCurrentStructureId ] = React.useState( lastStructureId );
+
+  /*useEffect(() => { 
+    if ((!currentStructureId || currentStructureId === "" || currentStructureId === "null") && User && User.structures && User.structures.length > 0) {
+      setCurrentStructureId(User.structures[0].ref.id);
+      LocalStorage.setCurrentStructureId(User.structures[0].ref.id);
+    }
+  }, [User, currentStructureId]);*/
+
+  useEffect(() => {
+    if (User.structures && User.structures.length > 0 ) {
+      let sid = currentStructureId;
+      if (!sid || sid === "" || sid === "null" || sid === null) {
+        console.log("sid not found")
+        sid = User.structures[0].ref.id;
+        console.log("sid", sid)
+      }
+      const structure = User.structures.find( (structure) => {
+        return structure.ref.id === sid;
+      });
+      if (structure) {
+        structure.ref.get().then( (doc) => {
+          if (doc.exists) {
+            const data = doc.data();
+            structure.name = data.name;
+            setCurrentStructureId(sid);
+            LocalStorage.setCurrentStructure(data);
+            LocalStorage.setCurrentStructureId(sid);
+          } else {
+            console.log("No such document!");
+          }
+        });
+      }
+    }
+  }, [User.structures, currentStructureId]);
+
+
+  const handleChangeCurrentStructure = (event) => {
+    setCurrentStructureId(event.target.value);
+    LocalStorage.setCurrentStructureId(event.target.value);
+  };
+
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
   const handleDrawerClose = () => {
     setOpen(false);
   };
+
+  if (!User || !User.structures ) {
+    return <div>Loading...</div>
+  }
+
+
+  const structuresMenuItems = User.structures.map( (structure) => {
+    return <MenuItem key={structure.ref.id} value={structure.ref.id}>{structure.name}</MenuItem>
+  });
+
+
+  const renderChildren = () => {
+    return React.Children.map(children, (child) => {
+      return React.cloneElement(child, {
+        sid: currentStructureId
+      });
+    });
+  };
+
   return(
   <div className={classes.root}>
     <CssBaseline />
@@ -140,22 +209,29 @@ function AdminLayout({ children }) {
         >
           <MenuIcon />
         </IconButton>
-        <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-          Boomago
+
+        <FormControl size="small" sx={{ mr: 2 }}>
+          <InputLabel id="demo-select-small-label">Struttura</InputLabel>
+          <Select
+            labelId="demo-select-small-label"
+            id="demo-select-small"
+            value={currentStructureId}
+            label="Struttura"
+            onChange={handleChangeCurrentStructure}
+          >
+            {structuresMenuItems}
+          </Select>
+        </FormControl>
+        { (false) &&
+          <IconButton color="inherit">
+            <Badge overlap="rectangular" badgeContent={4} color="secondary">
+              <NotificationsIcon />
+            </Badge>
+          </IconButton>
+        }
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
         </Typography>
-        <IconButton color="inherit">
-          <Badge overlap="rectangular" badgeContent={4} color="secondary">
-            <NotificationsIcon />
-          </Badge>
-        </IconButton>
-        <FlatButton
-          label="Logout"
-          onClick={() => {
-            logout();
-          }}
-          style={{color: '#fff'}}
-        />
-      
+        <Button color="inherit"  onClick={logout}>Logout</Button>
       </Toolbar>
     </AppBar>
     <Drawer
@@ -175,8 +251,8 @@ function AdminLayout({ children }) {
     </Drawer>
     <main className={classes.content}>
     <div className={classes.appBarSpacer} />
-    <Container maxWidth="lg" className={classes.container}>
-    {children}
+    <Container sid={currentStructureId} maxWidth="lg" className={classes.container}>
+    {renderChildren()}
     </Container>
     </main>
   </div>

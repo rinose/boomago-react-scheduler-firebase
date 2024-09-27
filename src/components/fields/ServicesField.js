@@ -16,7 +16,7 @@ export class ServicesField extends React.Component {
           options={services.sort((a, b) => -b.id.localeCompare(a.id))}
           getOptionLabel={option => option.name}
           filterSelectedOptions
-          defaultValue={defaultValue}
+          value={defaultValue}
           onChange={(e, obj) => {
             if(obj) {
               //const ids = obj.map( (item) => { return item.id} );

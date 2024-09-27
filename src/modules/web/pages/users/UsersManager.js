@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { withTranslation } from 'react-i18next';
 import TableViewComponent from '../../../../components/TableViewComponent'
@@ -21,85 +21,73 @@ const usersSchema = [
   { title: 'Data inserimento', field: 'timestamp', type: 'datetime', editable: 'never'}
 ]
 
-class UsersManager extends Component {
+function UsersManager( props) {
+  const [users, setUsers] = useState([]);
+  //const [selectedItem, setSelectedItem] = useState(false);
+  //const [categories, setCategories] = useState([]);
 
-  constructor(props) {
-    super(props)
+  
+  useEffect(() => {
 
-    this.state = {
-      users: [],
-      selectedItem: false
+    const getUsers = (fromCache) => {
+      let newUsers = []
+      GetUsers(props.sid, fromCache).then(querySnapshot => {
+        var source = querySnapshot.metadata.fromCache ? "local cache" : "server";
+        console.log("Data came from " + source);
+        //let newCategories = [];
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          newUsers.push(data);
+          //if(data.category && !(data.category in newCategories)) {
+          //  newCategories.push({"title": data.category});
+          //}
+        });
+        setUsers(newUsers);
+        //setCategories(newCategories);
+      })
     }
 
-    this.categories = [];
-  }
+    getUsers();
+  }, [props.sid]);
 
-  componentDidMount() {
-    console.log("UsersManager componentDidMount")
-    this.updateUsers(true);
-  }
 
-  handleAddUser() {
-    this.setState({
-      selectedItem: {}
-    });
-  }
-  onSaveUser = (user) => {
+
+  //const handleAddUser = () => {
+  //  setSelectedItem({});
+  //}
+
+
+  const saveUser = (user) => {
     user.id = user.id ? user.id : uuidv4();
-    UpdateUsers(user.id).set(user).then(
-      this.updateUsers(false)
+    UpdateUsers(props.sid, user.id).set(user).then(
+      //getUsers(false)
     ).catch(error => {
       console.error('Create New Equipment error', error);
     });
   }
-  onDeleteUser = (item) => {
+
+
+  const deleteUser = (item) => {
     DeleteUser(item.id).then(
-      //this.updateServices()
+      //updateServices()
     ).catch(error => {
       console.error('Create New Equipment error', error);
     });
   }
 
-  updateUsers(fromCache) {
-    this.getUsers(fromCache);
-  }
-  getUsers(fromCache) {
-    let newUsers = []
-    GetUsers(fromCache).then(querySnapshot => {
-      var source = querySnapshot.metadata.fromCache ? "local cache" : "server";
-      console.log("Data came from " + source);
-      this.categories = [];
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-        newUsers.push(data);
-        if(data.category && !(data.category in this.categories))
-        this.categories.push({"title": data.category});
-      });
-      this.setState({
-        users: newUsers,
-      })
-    })
-  }
 
-  render() {
-
-    const { t } = this.props;
-    const { users } = this.state;
+    const { t } = props;
     return (
       <div>
         <div><strong>{t("Users")}</strong></div>
-        { (users.length > 0) &&
         <TableViewComponent
-        onAdd={this.onSaveUser}
-        onEdit={this.onSaveUser}
-        onDelete={this.onDeleteUser}
+        onAdd={saveUser}
+        onEdit={saveUser}
+        onDelete={deleteUser}
         data={users} 
         columns={usersSchema}/>
-        }
       </div>
     )
-  }
-
 }
 
 export default withTranslation()(UsersManager);

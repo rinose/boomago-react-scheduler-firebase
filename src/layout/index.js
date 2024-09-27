@@ -1,25 +1,25 @@
-//import libs
-import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
-
-// import components
+import React from 'react'
+//import PropTypes from 'prop-types'
 import AdminLayout from './Admin'
 import PrivateLayout from './Private'
 import PublicLayout from './Public'
 
-class Layout extends Component {
+const Layout = ({ user: User, children, authed }) => {
+  //const location = useLocation();
 
-
-  render() {
-    const {children, authed, role} = this.props
-    if (authed && (role === "admin" || role === "superadmin") ) {
-      return <AdminLayout authed={authed}>{children}</AdminLayout>
-    } else if (authed) {
-      return <PrivateLayout authed={authed}>{children}</PrivateLayout>
-    }
-    return <PublicLayout authed={authed}>{children}</PublicLayout>
+  //if (authed && (role === "admin" || role === "superadmin")) {
+  if (User) {
+    return <AdminLayout user={User} authed={authed}>{children}</AdminLayout>
+  } else if (authed) {
+    return <PrivateLayout user={User} authed={authed}>{children}</PrivateLayout>
   }
+  return <PublicLayout authed={authed}>{children}</PublicLayout>
 }
 
 
-export default withRouter(Layout)
+Layout.propTypes = {
+  //user: PropTypes.object.isRequired,
+}
+
+
+export default Layout

@@ -23,6 +23,11 @@ if (!firebase.apps.length) {
 export const storageKey = 'KEY_FOR_LOCAL_STORAGE';
 export const db = firebase.firestore();
 export const firebaseAuth = firebase.auth;
+export const LocalStoragesKeys = {
+  currentStructureId: 'currentStructureId'
+};
+export const FieldPath = firebase.firestore.FieldPath;
+
 
 
 

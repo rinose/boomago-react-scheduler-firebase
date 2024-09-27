@@ -1,9 +1,9 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { withTranslation } from 'react-i18next';
 import TableViewComponent from '../../../../components/TableViewComponent'
-import Autocomplete from '@material-ui/lab/Autocomplete';
-import TextField from '@material-ui/core/TextField';
+//import Autocomplete from '@material-ui/lab/Autocomplete';
+//import TextField from '@material-ui/core/TextField';
 //Actions
 import {
   GetServices,
@@ -11,119 +11,110 @@ import {
   DeleteService
 } from "../../../../helpers/db";
 
-class ServicesManager extends Component {
 
-  constructor(props) {
-    super(props)
+const schema= [
+  { title: 'Nome', field: 'name', defaultSort: 'asc' },
+  { title: 'Descrizione', field: 'description'},
+  { title: 'Durata (minuti)', field: 'duration', type: 'numeric'},
+  { 
+    title: 'Categoria',
+    field: 'category',
+    /*editComponent: props => (
+      <Autocomplete
+      id="category"
+      //options={categories.sort((a, b) => -b.title.localeCompare(a.title))}
+      getOptionLabel={option => option.title}
+      freeSolo
+      renderInput={params => (
+        <TextField {...params} 
+        value={props.value}
+        onChange={e => props.onChange(e.target.value)}
+        label={"Category"}
+        margin="normal" 
+        variant="outlined" 
+        fullWidth />
+      )}
+    />
+    )*/
+  },
+  { title: 'Attivo', field: 'active', type: 'boolean', initialEditValue: true},
+  { title: 'Prezzo', field: 'price', type: 'currency', currencySetting: {currencyCode: "EUR"} }
+]
 
-    this.state = {
-      services: []
-    }
-    this.schema = [];
-    this.categories = [];
-  }
+function ServicesManager (props) {
 
-  componentDidMount() {
-    this.getServices(false);
-  }
+  const [services, setServices] = useState([]);
+  const [updateServices, setUpdateServices] = useState(false)
 
-  setService(service) {
-    UpdateServices(service.id).set(service).then(
-      //this.updateServices()
-    ).catch(error => {
-      console.error('Create New Equipment error', error);
-    });
-  }
+  //const [categories, setCategories] = useState([]);
 
-  onCreateService = (service) => {
-    service.id = service.id ? service.id : uuidv4();
-    this.setService(service);
-  }
-  onEditService = (service) => {
-    this.setService(service);
-    //this.updateServices();
-  }
-  onDeleteService = (service) => {
-    DeleteService(service.id).then(
-      //this.updateServices()
-    ).catch(error => {
-      console.error('Create New Equipment error', error);
-    });
-  }
+  const { t } = props;
 
-  updateServices() {
-    this.getServices(true);
-  }
-  getServices(fromCache) {
-    let newServices = [];
-    GetServices(fromCache).then(querySnapshot => {
-      //var source = querySnapshot.metadata.fromCache ? "local cache" : "server";
-      //console.log("Data came from " + source);
-      this.categories = [];
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-        newServices.push(data);
-        if(data.category && !(data.category in this.categories)) {
-          this.categories.push({"title": data.category});
-        }
-      });
-      this.initSchema();
-      this.setState({
-        services: newServices,
+
+  useEffect(() => {
+
+    const getServices = (fromCache) => {
+      let newServices = [];
+      GetServices(props.sid, fromCache).then(querySnapshot => {
+        //var source = querySnapshot.metadata.fromCache ? "local cache" : "server";
+        //console.log("Data came from " + source);
+        //let newCategories = [];
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          newServices.push(data);
+          //if(data.category && !(data.category in newCategories)) {
+          //  newCategories.push({"title": data.category});
+          //}
+        });
+        setServices(newServices);
+        //setCategories(newCategories);
       })
-    })
+    }
+
+    getServices(false);
+  }, [props.sid, updateServices]);
+
+
+  const setService = (service) => {
+    UpdateServices(props.sid, service.id).set(service).then(
+      setUpdateServices(!updateServices)
+    ).catch(error => {
+      console.error('Create New Equipment error', error);
+    });
   }
 
-  initSchema() {
-    const { t } = this.props;
-    this.schema= [
-      { title: 'Nome', field: 'name', defaultSort: 'asc' },
-      { title: 'Descrizione', field: 'description'},
-      { title: 'Durata', field: 'duration', type: 'numeric'},
-      { 
-        title: 'Categoria',
-        field: 'category',
-        editComponent: props => (
-          <Autocomplete
-          id="category"
-          options={this.categories.sort((a, b) => -b.title.localeCompare(a.title))}
-          getOptionLabel={option => option.title}
-          freeSolo
-          renderInput={params => (
-            <TextField {...params} 
-            value={props.value}
-            onChange={e => props.onChange(e.target.value)}
-            label={t("Category")}
-            margin="normal" 
-            variant="outlined" 
-            fullWidth />
-          )}
-        />
-        )
-      },
-      { title: 'Attivo', field: 'active', type: 'boolean'},
-      { title: 'Prezzo', field: 'price', type: 'currency', currencySetting: {currencyCode: "EUR"} }
-    ]
+
+  const onCreateService = (service) => {
+    service.id = service.id ? service.id : uuidv4();
+    setService(service);
   }
 
-  render() {
-    const { t } = this.props;
-    const { services } = this.state;
-    return (
-      <div>
-        <div><strong>{t("Services")}</strong></div>
-        { (services.length > 0) &&
-        <TableViewComponent
-          onAdd={this.onCreateService}
-          onEdit={this.onEditService}
-          onDelete={this.onDeleteService}
-          data={services}
-          columns={this.schema}/>
-        }
-      </div>
-    )
+
+  const onEditService = (service) => {
+    setService(service);
+    //updateServices();
   }
 
+
+  const onDeleteService = (service) => {
+    DeleteService(props.sid, service.id).then(
+      //updateServices()
+    ).catch(error => {
+      console.error('Create New Equipment error', error);
+    });
+  }
+
+  return (
+    <div>
+      <div><strong>{t("Services")}</strong></div>
+      <TableViewComponent
+        onAdd={onCreateService}
+        onEdit={onEditService}
+        onDelete={onDeleteService}
+        data={services}
+        columns={schema}/>
+    </div>
+  )
 }
 
 export default withTranslation()(ServicesManager);

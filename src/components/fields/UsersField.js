@@ -5,6 +5,7 @@ import { withTranslation } from 'react-i18next';
 import {
   GetUsers
 } from "../../helpers/db";
+import { LocalStorage } from '../../helpers/utils';
 
 export class UsersField extends React.Component {
 
@@ -25,7 +26,7 @@ export class UsersField extends React.Component {
 
   getUsers() {
     let newItems = []
-    GetUsers(true).then(querySnapshot => {
+    GetUsers( LocalStorage.getCurrentStructureId() , true).then(querySnapshot => {
       querySnapshot.forEach(doc => {
         const data = doc.data();
         newItems.push(data);
@@ -40,15 +41,16 @@ export class UsersField extends React.Component {
     const { t } = this.props;
     const { items } = this.state;
     if (items.length === 0) return(<div></div>);
-    var defaultValue = items.find( (item) => { return String(item.id) === String(this.props.defaultValue)} );
+    var defaultValue = items.find( (item) => { return String(item.id) === String(this.props.defaultValue) && this.props.defaultValue} );
     defaultValue = defaultValue ? defaultValue : {name:"", lastname:"", address:"", city:"", id:0};
+    const optionLabel = (option) => `${option.lastname} ${option.name} ${option.address ? option.address : ""} ${option.city ? option.city : ""}`
     return(
       <Autocomplete
           options={items.sort((a, b) => -b.lastname.localeCompare(a.lastname))}
-          getOptionLabel={option => option.lastname + " " + option.name + " " + option.address + " " + option.city}
+          getOptionLabel={option => optionLabel(option)}
           defaultValue={defaultValue}
           onChange={(e, obj) => {
-            if(obj) this.props.onChange(obj.id);
+            this.props.onChange(obj)
           }}
           renderInput={params => (
             <TextField {...params}

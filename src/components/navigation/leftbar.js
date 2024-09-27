@@ -3,19 +3,20 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+import EventNoteIcon from '@mui/icons-material/EventNote';
 import PeopleIcon from '@material-ui/icons/People';
 import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import WorkIcon from '@material-ui/icons/Work';
 import SettingsIcon from '@material-ui/icons/Settings';
+import BusinessIcon from '@mui/icons-material/Business';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 
 export const mainListItems = (
   <div>
     <ListItem button component="a" href="dashboard">
       <ListItemIcon>
-        <DashboardIcon />
+        <EventNoteIcon />
       </ListItemIcon>
       <ListItemText primary="Appuntamenti" />
     </ListItem>
@@ -31,24 +32,36 @@ export const mainListItems = (
       </ListItemIcon>
       <ListItemText primary="Servizi" />
     </ListItem>
+    { (false) &&
     <ListItem button component="a" href="resources">
       <ListItemIcon>
         <SupervisorAccountIcon />
       </ListItemIcon>
       <ListItemText primary="Risorse" />
     </ListItem>
+    }
+    { (false) &&
     <ListItem button>
       <ListItemIcon>
         <BarChartIcon />
       </ListItemIcon>
       <ListItemText primary="Reports" />
     </ListItem>
+    }
+    <ListItem button component="a" href="structures">
+      <ListItemIcon>
+        <BusinessIcon />
+      </ListItemIcon>
+      <ListItemText primary="Strutture" />
+    </ListItem>
+    { (false) &&
     <ListItem button component="a" href="settings">
       <ListItemIcon>
         <SettingsIcon />
       </ListItemIcon>
       <ListItemText primary="Settings" />
     </ListItem>
+    }
   </div>
 );
 

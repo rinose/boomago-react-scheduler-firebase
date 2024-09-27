@@ -4,13 +4,23 @@ import Loadable from 'react-loadable'
 // import components
 import LoadingComponent from '../../components/common/loader'
 
-const routes = [
+const _routes = [
   {
     path: '/',
     exact: true,
     roles: ["user"],
     component: Loadable({
       loader: () => import('./pages/home'),
+      loading: LoadingComponent,
+    }),
+  },
+  {
+    path: '/structures',
+    exact: true,
+    auth: true,
+    roles: ["admin", "superadmin"],
+    component: Loadable({
+      loader: () => import('./pages/structures'),
       loading: LoadingComponent,
     }),
   },
@@ -76,4 +86,4 @@ const routes = [
   },
 ]
 
-export default routes
+export default _routes

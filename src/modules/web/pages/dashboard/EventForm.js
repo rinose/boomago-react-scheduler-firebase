@@ -1,260 +1,185 @@
-import React from 'react';
-import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
+import React, { useEffect, useState } from 'react';
+import TextField from '@material-ui/core/TextField';
 import { withTranslation } from 'react-i18next';
-import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
-import itLocale from "date-fns/locale/it";
-//import moment from "moment";
-//import MomentUtils from "@date-io/moment";
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormGroup from '@mui/material/FormGroup';
+import { LocalStorage } from '../../../../helpers/utils';
 
-import { v4 as uuidv4 } from 'uuid';
-import {
-  DateTimePicker,
-  MuiPickersUtilsProvider,
-  KeyboardTimePicker
-} from '@material-ui/pickers';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
 
 import ServicesField from '../../../../components/fields/ServicesField'
 import UsersField from '../../../../components/fields/UsersField'
 import {
   GetServices
 } from "../../../../helpers/db";
+
 import moment from 'moment'
 import _ from 'lodash'
 
-import {
-  UpdateUsers
-} from "../../../../helpers/db";
+export function EventForm ( props ) {
+  const [services, setServices] = useState([]);
+  const [showUserForm, setShowUserForm] = useState(false);
+  const [endTime, setEndTime] = useState(props.event.end);
+  const [togglePhone, setTogglePhone] = useState(props.event.sendsms);
+  const [user, setUser] = useState(props.event.user);
+  const [phone, setPhone] = useState(props.event && props.event.user && props.event.user.phone ? props.event.user.phone : null);
 
-export class EventForm extends React.Component {
-
-  constructor(props) {
-    super(props);
-    this.state = {
-      ...props,
-      services: [],
-      showUserForm: false
-    }
-  }
-
-  componentDidMount() {
-    this.getServices();
-  }
-
-  getServices() {
-    let newServices = []
-    GetServices(true).then(querySnapshot => {
-      querySnapshot.forEach(doc => {
-        const data = doc.data();
-        newServices.push(data);
-      });
-      this.setState({
-        services: newServices,
+  useEffect(() => {
+    const getServices = () => {
+      let newServices = []
+      GetServices( LocalStorage.getCurrentStructureId(), true).then(querySnapshot => {
+        querySnapshot.forEach(doc => {
+          const data = doc.data();
+          newServices.push(data);
+        });
+        setServices(newServices)
       })
-    })
-  }
-
-
-  handleSubmit = e => {
-    e.preventDefault();
-    if(!this.state.event.refUserId && this.state.event.refServiceId) {
-      this.saveUser(this.state.event.user).then( (user) => {
-        this.setState({
-          showUserForm: !this.state.showUserForm,
-          event: {...this.state.event, 
-            refUserId: user.id,
-            user: user
-          }
-        }, () => {
-          this.props.onSaveEvent(this.state.event);
-          this.state.onRequestClose()
-        })
-        }
-      );
-    } else {
-      this.state.onRequestClose()
-      this.props.onSaveEvent(this.state.event);
     }
-  }
+    getServices();
+  }, []);
 
-  handleDelete = e => {
-    e.preventDefault();
-    this.state.onRequestClose()
-    this.state.onDeleteEvent(this.state.event)
-  }
-  handleCancel = e => {
-    e.preventDefault();
-    this.state.onRequestClose()
-  }
 
-  handleStartDateChange = e => {
-    const services = this.getSelectedServices();
-    const totalDurationMinutes = this.getEndTimeFromServices(services);
+  const handleStartDateChange = (e) => {
+    const services = getSelectedServices();
+    const totalDurationMinutes = getEndTimeFromServices(services);
     const startTime = e;
     const endTime = new Date(moment(startTime).add(totalDurationMinutes, 'minutes'));
-    this.setState({event: {...this.state.event, start: startTime, end: endTime}});
+    props.event.start = e;
+    props.event.end = endTime;
+    setEndTime(endTime);
   }
 
-  getSelectedServices() {
-    return _.filter(this.state.services, (service) => { return this.state.event.refServiceId && this.state.event.refServiceId.includes(service.id) });
+  const getSelectedServices = () => {
+    return _.filter(services, (service) => { return props.event.refServiceId && props.event.refServiceId.includes(service.id) });
   }
 
-  handleEndDateChange = e => {
-    let event = this.state.event;
-    event.end = e;
-    this.setState({
-      event: event
-    })
+  const handleEndDateChange = e => {
+    props.event.end = e;
   }
 
-  getEndTimeFromServices(services) {
+  const getEndTimeFromServices = (services) => {
     return _.reduce(services, (result, value) => {
       return result + value.duration;
     },0)
   }
 
-  onServiceChange = (items) => {
+  const onServiceChange = (items) => {
     const ids = items.map( (item) => { return item.id} );
-    const totalDurationMinutes = this.getEndTimeFromServices(items);
-    const startTime = this.state.event.start;
+    const totalDurationMinutes = getEndTimeFromServices(items);
+    const startTime = props.event.start;
     const endTime = new Date(moment(startTime).add(totalDurationMinutes, 'minutes'));
-    this.setState({event: {...this.state.event, refServiceId: ids, end: endTime}});
+    props.event.refServiceId = ids;
+    props.event.end = endTime;
+    setEndTime(endTime);
   }
 
-  toggleUserForm = () =>{
-    this.setState({
-      showUserForm: !this.state.showUserForm
-    })
+  const toggleUserForm = () =>{
+    setShowUserForm(!showUserForm)
   }
 
-  saveUser = (user) => {
-    user.id = user.id ? user.id : uuidv4();
-    return UpdateUsers(user.id).set(user).then( () =>
-      { return user }
-    ).catch(error => {
-      console.error('Update Event error', error);
-    });
-  }  
+  const handleTogglePhone = (checked) => {
+    setTogglePhone(checked);
+    props.event.sendsms = checked;
+  }
 
-  render() {
-    const { t } = this.props;
-    const { event, services } = this.state;
-    return (
-      <div>
-      {
-        (services.length > 0 ) &&
-        <form
-          onSubmit={e => this.handleSubmit(e)}
-        >
-          <RaisedButton
-            className={this.props.event.title ? '' : 'd-none'}
-            label="Delete"
-            type="button"
-            secondary={true}
-            onClick={this.handleDelete}
+  const handleUserChange = (user) => {
+    props.event.refUserId = user ? event.refUserId = user.id : null;
+    props.event.user = user;
+    if (!user) return;
+    setUser(user);
+    setPhone(user.phone);
+  }
+
+
+  const { event, t } = props;
+
+  return (
+    <div>
+    {
+      (services.length > 0 ) &&
+      <form
+      >
+        <div>
+        <br/>
+          <UsersField
+            sid={props.uid}
+            uid={props.uid}
+            defaultValue={event.refUserId}
+            onChange={handleUserChange}
           />
-          <div>
-          <br/>
-            <UsersField
-              uid={this.props.uid}
-              defaultValue={event.refUserId}
-              onChange={(newValue) => this.setState({event: {...this.state.event, refUserId: newValue}})}
-            />
-            {
-              (!this.state.showUserForm) &&
-              <button onClick={this.toggleUserForm}>Nuovo Utente</button>
-            }
-            {
-              (this.state.showUserForm) &&
-              <div>
-                <TextField
-                  id="name"
-                  floatingLabelText={t("UserName")}
-                  onChange={(e) => this.setState({event: {...this.state.event, user: {...this.state.event.user, name: e.target.value }}})}
-                />
-                <TextField
-                  id="surname"
-                  floatingLabelText={t("LastName")}
-                  onChange={(e) => this.setState({event: {...this.state.event, user: {...this.state.event.user, lastname: e.target.value }}})}
-                />
-                <TextField
-                  id="phone"
-                  floatingLabelText={t("Phone")}
-                  onChange={(e) => this.setState({event: {...this.state.event, user: {...this.state.event.user, phone: e.target.value }}})}
-                />
-              </div>
-            }
-            <ServicesField
-              uid={this.props.uid}
-              services={services}
-              defaultValue={event.refServiceId}
-              onChange={this.onServiceChange}
-            />
-            <MuiPickersUtilsProvider utils={DateFnsUtils} locale={itLocale}>
-              <DateTimePicker
-                autoOk
-                ampm={false}
-                format="dd/MM/yyyy"
-                value={event.start}
-                onChange={this.handleStartDateChange}
-                label={t("Day")}
+          {
+            (!showUserForm) &&
+            <Button onClick={toggleUserForm}>Nuovo Utente</Button>
+          }
+          {
+            (showUserForm) &&
+            <div>
+              <TextField
+                id="name"
+                label={t("UserName")}
+                onChange={(e) => { event.user.name = e.target.value }}
               />
+              <TextField
+                id="surname"
+                label={t("LastName")}
+                onChange={(e) => event.user.lastname = e.target.value }
+              />
+              <TextField
+                id="phone"
+                label={t("Phone")}
+                onChange={(e) => {
+                  event.user.phone = e.target.value;
+                  setPhone(e.target.value);
+                }}
+              />
+            </div>
+          }
+          <ServicesField
+            uid={props.uid}
+            services={services}
+            defaultValue={event.refServiceId}
+            onChange={onServiceChange}
+          />
+
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <Stack spacing={0.01}>
+              <DatePicker label={t("Day")} value={event.start} onChange={handleStartDateChange} />
               <br/>
-              <KeyboardTimePicker
-                ampm={false}
-                variant="inline"
-                label={t("StartHour")}
-                value={event.start}
-                onChange={this.handleStartDateChange}
-              />
-              <KeyboardTimePicker
-                ampm={false}
-                variant="inline"
-                label={t("EndHour")}
-                value={event.end}
-                onChange={this.handleEndDateChange}
-              />
-            </MuiPickersUtilsProvider>
+              <MobileTimePicker ampm={false} label={t("StartHour")} defaultValue={event.start} onChange={handleStartDateChange}/>
+              <br/>
+              <MobileTimePicker ampm={false} label={t("EndHour")} defaultValue={event.end} value={endTime} onChange={handleEndDateChange}/>
+            </Stack>
+          </LocalizationProvider>
+
+          <TextField
+            defaultValue={event.notes}
+            label={t("Notes")}
+            onChange={(e) => event.notes = e.target.value }
+          />
+          <FormGroup>
+            <FormControlLabel control={<Checkbox defaultChecked={togglePhone} onChange={(e) => handleTogglePhone(e.target.checked)}/>} label="Invio SMS promemoria" />
             <TextField
-              defaultValue={event.notes}
-              floatingLabelText={t("Notes")}
-              onChange={(event, newValue) => this.setState({event: {...this.state.event, notes: newValue}})}
-            />
-            {'phone' in event ? <TextField
-              defaultValue={event.phone}
-              floatingLabelText="Phone"
-              onChange={(event, newValue) => this.setState({event: {...this.state.event, phone: newValue}})}
-            /> : ''}
-
-          </div>
-          <div>
-            <RaisedButton
-              className={event.title ? ' mr-3 my-3' : 'd-none mr-3 my-3'}
-              label="Update"
-              primary={true}
-              type="submit"
-            />
-            <RaisedButton
-              className={event.title ? 'd-none mr-3 my-3' : 'mr-3 my-3'}
-              label="Create"
-              primary={true}
-              type="submit"
-            />
-            <RaisedButton
-              className={'mr-3 my-3'}
-              label="Cancel"
-              type="Cancel"
-              onClick={this.handleCancel}
-            />
-
-          </div>
-
-        </form>
-      }
-      </div>
-    );
-  }
+            type="number"
+            disabled={!togglePhone}
+            label="Numero di telefono per SMS"
+            value={phone ? phone : ""}
+            onChange={(event) => {
+              user.phone = event.target.value;
+              setPhone(event.target.value);
+            }}
+          />
+          </FormGroup>
+        </div>
+      </form>
+    }
+    </div>
+  );
 }
 
 export default withTranslation()(EventForm);

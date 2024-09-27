@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { auth } from '../../../../helpers/auth';
 
-import RaisedButton from 'material-ui/RaisedButton';
-import TextField from 'material-ui/TextField';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
+
 
 function setErrorMsg(error) {
   return {
@@ -54,7 +55,7 @@ export default class Register extends Component {
             &nbsp;{this.state.registerError}
           </div>
         )}
-        <RaisedButton
+        <Button
           label="Register"
           primary={true}
           style={style.raisedBtn}

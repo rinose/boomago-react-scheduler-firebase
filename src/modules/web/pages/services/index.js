@@ -1,26 +1,23 @@
-import React, { Component } from 'react';
+import React from 'react';
 // import context
 import { ProfilerConsumer } from '../../../../context/profileContext'
 // import components
 import ServicesManager from './ServicesManager'
 
-class Services extends Component {
-  render() {
+function Services (props) {
     return (
       <ProfilerConsumer>
         {context => {
           if (context.email) {
             return (
               <div>
-                <ServicesManager uid={context.uid} sid={context.sid}/>
+                <ServicesManager uid={context.uid} sid={props.sid}/>
               </div>
             )
           }
         }}
       </ProfilerConsumer>
     )
-  }
-
 }
 
 export default (Services);

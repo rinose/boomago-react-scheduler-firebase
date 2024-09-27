@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react'
+import React, {useState, useEffect, useCallback} from 'react'
 // import context
 import { ProfilerConsumer } from '../../../../context/profileContext'
 import BookingManager from './BookingManager'
@@ -11,14 +11,10 @@ export default function UserBooking(props) {
 
   const [services, setServices] = useState([])
 
-  useEffect(() => {
-    getServices();
-  }, []);
-
-  function getServices() {
+  const getServices = useCallback(() => {
     console.log("getServices")
     let newServices = [];
-    GetServices(true).then(querySnapshot => {
+    GetServices(props.sid, true).then(querySnapshot => {
       var source = querySnapshot.metadata.fromCache ? "local cache" : "server";
       console.log("Data came from " + source);
       querySnapshot.forEach(doc => {
@@ -27,7 +23,16 @@ export default function UserBooking(props) {
       });
       setServices(newServices)
     })
-  }
+  }, [props.sid]); 
+
+
+
+  useEffect(() => {
+    getServices();
+  }, [getServices]);
+
+
+
 
   return (
     <ProfilerConsumer>

@@ -5,7 +5,7 @@ import Loadable from 'react-loadable'
 import LoadingComponent from '../../components/common/loader'
 
 
-export default [
+const _routes = [
   {
     path: '/login',
     exact: true,
@@ -27,3 +27,5 @@ export default [
     }),
   },
 ]
+
+export default _routes;

@@ -28,7 +28,7 @@ class ResourcesManager extends Component {
   }
 
   setResource(resource) {
-    UpdateResources(resource.id).set(resource).then(
+    UpdateResources(this.props.sid, resource.id).set(resource).then(
       //this.updateResources()
     ).catch(error => {
       console.error('Create New Equipment error', error);
@@ -44,7 +44,7 @@ class ResourcesManager extends Component {
     //this.updateResources();
   }
   onDeleteResource = (resource) => {
-    DeleteResource(resource.id).then(
+    DeleteResource(this.props.sid, resource.id).then(
       //this.updateResources()
     ).catch(error => {
       console.error('Create New Equipment error', error);
@@ -56,7 +56,7 @@ class ResourcesManager extends Component {
   }*/
   getResources() {
     let newResources = [];
-    GetResources(true).then(querySnapshot => {
+    GetResources(this.props.sid, true).then(querySnapshot => {
       var source = querySnapshot.metadata.fromCache ? "local cache" : "server";
       console.log("Data came from " + source);
       this.categories = [];
