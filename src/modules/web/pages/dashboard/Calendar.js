@@ -17,7 +17,7 @@ import _ from 'lodash'
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import { LocalStorage, sendScheduledMessage } from '../../../../helpers/utils';
+import { LocalStorage } from '../../../../helpers/utils';
 
 
 //Actions
@@ -312,7 +312,6 @@ function Dnd(props) {
       const send_at = event.start;
       console.log("scheduling sms for: ", event)
       console.log("txt_message: ", txt_message)
-      //sendScheduledMessage(txt_message, to, send_at);
     }
   }
 

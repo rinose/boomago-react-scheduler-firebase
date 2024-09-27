@@ -1,4 +1,4 @@
-import { LocalStoragesKeys } from '../config/constants';
+/*import { LocalStoragesKeys } from '../config/constants';
 
 
 const TWILIO_ACCOUNT_SID = "AC6c491b13ba7911d1cfa347770412e267";
@@ -68,3 +68,4 @@ export const LocalStorage = {
       .getItem(LocalStoragesKeys.currentStructureId);
   }
 };
+*/
